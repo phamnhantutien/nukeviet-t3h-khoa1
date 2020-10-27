@@ -6,7 +6,39 @@
     <title>Form Validation</title>
 </head>
 <body>
-    <form action="#" method="post">
+<?php
+    include('config.php');
+    $hoten = $email = $phone = $province = $district = $ward = "";
+    $nameErr = "";
+    if ($_SERVER["REQUEST_METHOD"] == "POST"){
+        if(isset($_POST["hoten"])){
+            $hoten = test_input($_POST["hoten"]);
+        }
+        if(isset($_POST["phone"])){
+            $phone = $_POST["phone"];
+        }
+        if(isset($_POST["email"])){
+            $email = $_POST["email"];
+        }
+        if(isset($_POST["province"])){
+            $province = $_POST["province"];
+        }
+        if(isset($_POST["district"])){
+            $district = $_POST["district"];
+        }
+        if(isset($_POST["ward"])){
+            $ward = $_POST["ward"];
+        }
+    }
+
+    function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+?>
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
         <label for="hoten">Họ tên:</label><br>
         <input type="text" id="hoten" name="hoten" required><br>
         <label for="phone">Điện thoại:</label><br>
@@ -102,5 +134,15 @@
         </select><br><br>
         <input type="submit" name="submit" value="Submit">  
     </form>
+<?php
+    if(isset($_POST["hoten"]) && isset($_POST["email"]) && isset($_POST["province"]) 
+        && isset($_POST["district"]) && isset($_POST["ward"])){
+        $sql = "INSERT INTO persion (name, phone, email, province, district, ward)
+        VALUES ('$hoten', '$phone', '$email', '$province', '$district', '$ward')";
+        // use exec() because no results are returned
+        $conn->exec($sql);
+        echo "<br>" . "Thêm thông tin người dùng thành công";
+    }
+?>
 </body>
 </html>
